@@ -1,32 +1,32 @@
-﻿using InfoTrack.WebRanking.Models;
+﻿using InfoTrack.WebRanking.Interfaces;
+using InfoTrack.WebRanking.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InfoTrack.WebRanking.Controllers
 {
     public class SearchController : Controller
     {
-        public ActionResult Index()
+        private readonly ISearchService _service;
+
+        public SearchController(ISearchService service)
         {
-            return View();
+            _service = service;
+        }
+
+        public async Task<ActionResult> Index()
+        {
+            var history = await _service.GetSearchHistoryAsync();
+            return View(history);
         }
 
         [HttpPost]
-        public ActionResult Search(SearchResult search)
+        public async Task<ActionResult> Search(SearchResult search)
         {
-            search.ResultPositions = ScrapeGoogle(search.Keywords, search.Url);
-            return View("Index", search);
+            // TODO: Implementation on Web scrapper to be continued ...
+            //search.ResultPositions = ScrapeGoogle(search.Keywords, search.Url);
+            await _service.SaveSearchResultAsync(search);
+            return RedirectToAction("Index");
         }
 
-        private string ScrapeGoogle(string keywords, string url)
-        {
-            // Your scraping logic here
-            // You would use `HttpClient` or `WebClient` to fetch the HTML and then parse the HTML to get the rankings.
-            // This would involve a bit of regex or string manipulation.
-            // Return positions as string e.g., "1, 10, 33"
-            // If the URL is not found within the first 100 results, return "0".
-
-            return "";
-        }
     }
-
 }

@@ -1,14 +1,18 @@
+using InfoTrack.WebRanking.Interfaces;
+using InfoTrack.WebRanking.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<ISearchService,SearchService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    
 }
 app.UseStaticFiles();
 
