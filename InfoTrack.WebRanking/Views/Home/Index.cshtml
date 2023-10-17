@@ -1,0 +1,17 @@
+﻿@model  InfoTrack.WebRanking.Models.SearchResult;
+
+@using (Html.BeginForm("Search", "Search", FormMethod.Post))
+{
+    @Html.LabelFor(m => m.Keywords)
+    @Html.TextBoxFor(m => m.Keywords)
+
+    @Html.LabelFor(m => m.Url)
+    @Html.TextBoxFor(m => m.Url)
+
+    <input type="submit" value="Search" />
+
+    @if (!string.IsNullOrEmpty(Model.ResultPositions))
+    {
+        <p>Positions: @Model.ResultPositions</p>
+    }
+}
