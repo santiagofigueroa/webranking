@@ -1,23 +1,34 @@
 ﻿using Dapper;
 using InfoTrack.WebRanking.Interfaces;
 using InfoTrack.WebRanking.Models;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace InfoTrack.WebRanking.Repository
 {
     public class SearchRepository : ISearchRepository
     {
-        private IConfiguration _configuration;
-        private readonly ISearchRepository _databaseService;
-        private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
         private readonly string _connectionString;
 
-        public SearchRepository(IConfiguration configuration ,ISearchRepository databaseService)
+        public SearchRepository(IConfiguration configuration)
         {
             _configuration = configuration;
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
-            _databaseService = databaseService;
+            _connectionString = _configuration.GetConnectionString("DefaultConnection");
         }
+
+        public async Task<IEnumerable<SearchEngine>> GetAllSearchEnginesAsync()
+        {
+            const string sql = "SELECT * FROM SearchEngines";
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                return await connection.QueryAsync<SearchEngine>(sql);
+            }
+        }
+
 
         public async Task SaveSearchResultAsync(SearchHistory result)
         {
@@ -39,5 +50,4 @@ namespace InfoTrack.WebRanking.Repository
             }
         }
     }
-
 }

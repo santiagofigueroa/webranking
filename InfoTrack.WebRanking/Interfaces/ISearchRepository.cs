@@ -6,5 +6,6 @@ namespace InfoTrack.WebRanking.Interfaces
     {
         Task SaveSearchResultAsync(SearchHistory result);
         Task<IEnumerable<SearchHistory>> GetSearchHistoryAsync();
+        Task<IEnumerable<SearchEngine>> GetAllSearchEnginesAsync();
     }
 }

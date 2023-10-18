@@ -22,8 +22,7 @@ namespace InfoTrack.WebRanking.Controllers
         [HttpPost]
         public async Task<ActionResult> Search(SearchResult search)
         {
-            // TODO: Implementation on Web scrapper to be continued ...
-            //search.ResultPositions = ScrapeGoogle(search.Keywords, search.Url);
+            search = await _service.GetSearchRankingsAsync(search);
             await _service.SaveSearchResultAsync(search);
             return RedirectToAction("Index");
         }
