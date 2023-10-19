@@ -3,8 +3,8 @@
 @using (Html.BeginForm("Search", "Search", FormMethod.Post))
 {
     <div class="form-group">
-        @Html.LabelFor(m => m.SelectedSearchEngineId, "Search Engine")
-        @Html.DropDownListFor(m => m.SelectedSearchEngineId, Model.AvailableSearchEngines, new { @class = "form-control" })
+        @Html.LabelFor(m => m.SelectedSearchEngineName, "Search Engine")
+        @Html.DropDownListFor(m => m.SelectedSearchEngineName, Model.AvailableSearchEngines, new { @class = "form-control" })
     </div>
 
     <div class="form-group">

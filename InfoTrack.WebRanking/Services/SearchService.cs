@@ -1,6 +1,9 @@
 ﻿using HtmlAgilityPack;
 using InfoTrack.WebRanking.Interfaces;
 using InfoTrack.WebRanking.Models;
+using System.Linq;
+using System.Net;
+using System.Text;
 using System.Web;
 
 namespace InfoTrack.WebRanking.Services
@@ -34,41 +37,69 @@ namespace InfoTrack.WebRanking.Services
         public async Task<SearchResult> GetSearchRankingsAsync(SearchResult search)
         {
             var searchEngines = await _searchRepository.GetAllSearchEnginesAsync();
+            var selectedSearchEngine = searchEngines.FirstOrDefault(x => x.Id.Equals(search.SelectedSearchEngineName));
 
-            if (searchEngines == null) return search;
-            //TODO:Find a  better way to chose between different search engines as is only for default at the moment
-            var searchUrl = searchEngines.FirstOrDefault().SearchUrl.Replace("#SearchText#", HttpUtility.UrlEncode(search.Keywords)).Replace("#NumberResultsToSearchIn#", "100");
+            if (selectedSearchEngine == null)
+                return search;
 
-            using var client = new HttpClient();
-            var response = HttpUtility.HtmlDecode(await client.GetStringAsync($"{searchEngines.FirstOrDefault().BaseUrl}/{searchUrl}"));
-            var searchResults = ExtractSearchResultsFromResponse(response);
+            // Use StringBuilder for constructing the search URL
+            var searchUrlBuilder = new StringBuilder();
+            searchUrlBuilder.Append(selectedSearchEngine.BaseUrl);
+            searchUrlBuilder.Append("/search?q=");
+            searchUrlBuilder.Append(HttpUtility.UrlEncode(search.Keywords));
+            searchUrlBuilder.Append("&num=100");
+            var searchUrl = searchUrlBuilder.ToString();
 
-            var rankingList = (from link in searchResults
-                               where link.Contains(search.Url, StringComparison.OrdinalIgnoreCase)
-                               select searchResults.IndexOf(link) + 1)
-                               .Distinct()
-                               .ToList();
+            //Accepts the cookie window option 
+            var cookieContainer = new CookieContainer();
+            using var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+            using var client = new HttpClient(handler);
 
-            search.ResultPositions = string.Join(", ", rankingList);
+            // Pretend to be a browser
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
-            await SaveSearchResultAsync(search);  
+            var response = await client.GetStringAsync(searchUrl);
+            var decodedResponse = HttpUtility.HtmlDecode(response);
+            var rankings = ExtractSearchResultsFromResponse(decodedResponse);
+
+            // This will convert the integer list into a comma-separated string.
+            search.ResultPositions = string.Join(", ", rankings.Distinct());
+
+            // Save or do further operations on the search result here.
 
             return search;
         }
 
-        public List<string> ExtractSearchResultsFromResponse(string responseBody)
+
+
+        public List<int> ExtractSearchResultsFromResponse(string responseBody)
         {
             var document = new HtmlDocument();
             document.LoadHtml(responseBody);
 
-            var resultNodes = document.DocumentNode.SelectNodes("//div//h3/a[@href]");
+            // Assuming Google search results are contained within div elements (you might want to adjust this selector)
+            var resultNodes = document.DocumentNode.SelectNodes("//div[@class='MjjYud']");
 
             if (resultNodes == null)
-                return new List<string>();
+                return new List<int>();
 
-            return resultNodes
-                .Select(node => HttpUtility.UrlDecode(node.Attributes["href"].Value))
-                .ToList();
+            var ranks = new List<int>();
+
+            for (int i = 0; i < resultNodes.Count && i < 100; i++) // Limiting to the first 100 results
+            {
+                var resultNode = resultNodes[i];
+
+                // Check if the content of the node contains "infotrack"
+                if (resultNode.InnerText.Contains("infotrack", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Add the rank (index + 1 since index starts at 0) to the list
+                    ranks.Add(i + 1);
+                }
+            }
+
+            return ranks;
         }
+
+
     }
 }
