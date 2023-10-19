@@ -7,9 +7,31 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Configuration\appsettings.Release.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Configuration\appsettings.Release.json">
+      <IsTransformFile>true</IsTransformFile>
+      <DependentUpon>appsettings.json</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.11" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
+    <PackageReference Include="Microsoft.VisualStudio.SlowCheetah" Version="4.0.50">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Configuration\appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TransformOnBuild>true</TransformOnBuild>
+    </Content>
   </ItemGroup>
 
 </Project>

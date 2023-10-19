@@ -1,21 +1,37 @@
-﻿using InfoTrack.WebRanking.Models;
+﻿using InfoTrack.WebRanking.Interfaces;
+using InfoTrack.WebRanking.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 
 namespace InfoTrack.WebRanking.Controllers
 {
     public class HomeController : Controller
     {
+        public readonly ISearchRepository _searchRepository; 
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ISearchRepository searchRepository,
+                              ILogger<HomeController> logger)
         {
+            _searchRepository = searchRepository;  
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var model = new SearchResult();
+
+            var searchEngines = await _searchRepository.GetAllSearchEnginesAsync();
+
+            model.AvailableSearchEngines = searchEngines.Select(se => new SelectListItem
+            {
+                Value = se.Id.ToString(),
+                Text = se.Title
+
+            }).ToList();
+
+            return View(model);
         }
 
     }
