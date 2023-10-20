@@ -44,7 +44,6 @@ namespace InfoTrack.WebRanking.Services
             var searchUrlBuilder = new StringBuilder(selectedSearchEngine.BaseUrl);
             searchUrlBuilder.Append(selectedSearchEngine.SearchUrl);
             searchUrlBuilder.Replace("#SearchText#", HttpUtility.UrlEncode(search.Keywords));
-            searchUrlBuilder.Replace("#NumberResultsToSearchIn#", "100");
             var searchUrl = searchUrlBuilder.ToString();
 
             //Accepts the cookie window option 
@@ -60,6 +59,7 @@ namespace InfoTrack.WebRanking.Services
             // Extract rankings using the expression from the search engine model
             var rankingList = ExtractSearchResultsFromResponse(response, selectedSearchEngine.ResultExtractionExpression);
 
+            //Place the results  in the corresponding list 
             search.ResultPositions = string.Join(", ", rankingList);
            
             //Save search results to database 
