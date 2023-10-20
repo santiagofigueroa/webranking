@@ -24,7 +24,10 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
 
+    // Serve the default Vue page
+    app.UseDefaultFiles();
 }
 
 app.UseStaticFiles();
