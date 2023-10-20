@@ -28,7 +28,7 @@ namespace InfoTrack.WebRanking.Services
                 Keywords = search.Keywords,
                 Url = search.Url,
                 ResultPositions = search.ResultPositions,
-                SearchDate = DateTime.Now 
+                SearchDate = DateTime.Now
             };
 
             await _searchRepository.SaveSearchResultAsync(searchHistory);
@@ -39,15 +39,12 @@ namespace InfoTrack.WebRanking.Services
             var searchEngines = await _searchRepository.GetAllSearchEnginesAsync();
             var selectedSearchEngine = searchEngines.FirstOrDefault(x => x.Id.Equals(search.SelectedSearchEngineName));
 
-            if (selectedSearchEngine == null)
-                return search;
+            if (selectedSearchEngine == null) return search;
 
-            // Use StringBuilder for constructing the search URL
-            var searchUrlBuilder = new StringBuilder();
-            searchUrlBuilder.Append(selectedSearchEngine.BaseUrl);
-            searchUrlBuilder.Append("/search?q=");
-            searchUrlBuilder.Append(HttpUtility.UrlEncode(search.Keywords));
-            searchUrlBuilder.Append("&num=100");
+            var searchUrlBuilder = new StringBuilder(selectedSearchEngine.BaseUrl);
+            searchUrlBuilder.Append(selectedSearchEngine.SearchUrl);
+            searchUrlBuilder.Replace("#SearchText#", HttpUtility.UrlEncode(search.Keywords));
+            searchUrlBuilder.Replace("#NumberResultsToSearchIn#", "100");
             var searchUrl = searchUrlBuilder.ToString();
 
             //Accepts the cookie window option 
@@ -55,30 +52,31 @@ namespace InfoTrack.WebRanking.Services
             using var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
             using var client = new HttpClient(handler);
 
-            // Pretend to be a browser
+            // Pretend to be a browser to avoid bot blocking
             client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
-            var response = await client.GetStringAsync(searchUrl);
-            var decodedResponse = HttpUtility.HtmlDecode(response);
-            var rankings = ExtractSearchResultsFromResponse(decodedResponse);
+            var response = HttpUtility.HtmlDecode(await client.GetStringAsync($"{searchUrl}"));
 
-            // This will convert the integer list into a comma-separated string.
-            search.ResultPositions = string.Join(", ", rankings.Distinct());
+            // Extract rankings using the expression from the search engine model
+            var rankingList = ExtractSearchResultsFromResponse(response, selectedSearchEngine.ResultExtractionExpression);
 
-            // Save or do further operations on the search result here.
+            search.ResultPositions = string.Join(", ", rankingList);
+           
+            //Save search results to database 
+            await SaveSearchResultAsync(search);
 
             return search;
         }
 
 
-
-        public List<int> ExtractSearchResultsFromResponse(string responseBody)
+        // Extraction method:
+        public List<int> ExtractSearchResultsFromResponse(string responseBody, string expression)
         {
             var document = new HtmlDocument();
             document.LoadHtml(responseBody);
 
-            // Assuming Google search results are contained within div elements (you might want to adjust this selector)
-            var resultNodes = document.DocumentNode.SelectNodes("//div[@class='MjjYud']");
+            // Use the provided expression for the search results extraction
+            var resultNodes = document.DocumentNode.SelectNodes(expression);
 
             if (resultNodes == null)
                 return new List<int>();

@@ -23,9 +23,7 @@ namespace InfoTrack.WebRanking.Controllers
         public async Task<ActionResult> Search(SearchResult search)
         {
             search = await _service.GetSearchRankingsAsync(search);
-            await _service.SaveSearchResultAsync(search);
             return RedirectToAction("Index", "Home");
         }
-
     }
 }
