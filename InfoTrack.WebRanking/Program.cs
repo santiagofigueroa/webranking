@@ -4,6 +4,18 @@ using InfoTrack.WebRanking.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS services
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 // Added Configurations in one place to be more precise when editing. 
 var config = new ConfigurationBuilder()
     .SetBasePath(builder.Environment.ContentRootPath)
@@ -20,6 +32,8 @@ builder.Services.AddSingleton<ISearchService, SearchService>();
 builder.Services.AddTransient<ISearchRepository, SearchRepository>();
 
 var app = builder.Build();
+// CORS policy
+app.UseCors("AllowAllOrigins");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

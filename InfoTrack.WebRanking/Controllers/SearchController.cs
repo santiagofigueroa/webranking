@@ -25,5 +25,12 @@ namespace InfoTrack.WebRanking.Controllers
             search = await _service.GetSearchRankingsAsync(search);
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        public async Task<IEnumerable<SearchEngine>> GetSearchEngines()
+        {
+            var searchEnginesLst = await _service.GetSearchEnginesAsync();
+            return searchEnginesLst;
+        }
     }
 }

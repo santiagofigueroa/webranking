@@ -68,7 +68,10 @@ namespace InfoTrack.WebRanking.Services
             return search;
         }
 
-
+        public async Task<IEnumerable<SearchEngine>> GetSearchEnginesAsync()
+        {
+            return await _searchRepository.GetAllSearchEnginesAsync();
+        }
         // Extraction method:
         public List<int> ExtractSearchResultsFromResponse(string responseBody, string expression)
         {
@@ -97,7 +100,5 @@ namespace InfoTrack.WebRanking.Services
 
             return ranks;
         }
-
-
     }
 }
