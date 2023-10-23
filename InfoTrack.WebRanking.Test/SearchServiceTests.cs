@@ -1,11 +1,7 @@
 using InfoTrack.WebRanking.Services;
 using InfoTrack.WebRanking.Interfaces;
 using InfoTrack.WebRanking.Models;
-using NUnit.Framework;
 using Moq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace InfoTrack.WebRanking.Tests
 {
@@ -41,7 +37,7 @@ namespace InfoTrack.WebRanking.Tests
         [Test]
         public async Task SaveSearchResultAsync_SavesSearchResult()
         {
-            var search = new SearchResult { Keywords = "Test", Url = "http://test.com", ResultPositions = "1, 2" };
+            var search = new SearchResult { Keywords = "Test", Url = "http://google.com", ResultPositions = "1, 2" };
             _mockSearchRepository.Setup(r => r.SaveSearchResultAsync(It.IsAny<SearchHistory>())).Returns(Task.CompletedTask);
 
             await _searchService.SaveSearchResultAsync(search);
