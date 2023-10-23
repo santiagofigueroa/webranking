@@ -45,6 +45,9 @@ namespace InfoTrack.WebRanking.Services
             searchUrlBuilder.Append(selectedSearchEngine.SearchUrl);
             searchUrlBuilder.Replace("#SearchText#", HttpUtility.UrlEncode(search.Keywords));
             var searchUrl = searchUrlBuilder.ToString();
+            
+            //Save URL used 
+            search.Url = searchUrl;
 
             //Accepts the cookie window option 
             var cookieContainer = new CookieContainer();

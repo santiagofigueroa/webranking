@@ -20,10 +20,10 @@ namespace InfoTrack.WebRanking.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Search(SearchResult search)
+        public async Task<ActionResult> Search([FromBody] SearchResult search)
         {
-            search = await _service.GetSearchRankingsAsync(search);
-            return RedirectToAction("Index", "Home");
+            var result = await _service.GetSearchRankingsAsync(search);
+            return Ok(result);
         }
 
         [HttpGet]
