@@ -5,6 +5,8 @@ VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoTrack.WebRanking", "InfoTrack.WebRanking\InfoTrack.WebRanking.csproj", "{8CF4544A-4887-4B7C-9CDC-61CE0D5455A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoTrack.WebRanking.Test", "InfoTrack.WebRanking.Test\InfoTrack.WebRanking.Test.csproj", "{C0DBD838-378D-4E68-93DA-B5DB8C7B2BA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{8CF4544A-4887-4B7C-9CDC-61CE0D5455A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CF4544A-4887-4B7C-9CDC-61CE0D5455A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CF4544A-4887-4B7C-9CDC-61CE0D5455A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0DBD838-378D-4E68-93DA-B5DB8C7B2BA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0DBD838-378D-4E68-93DA-B5DB8C7B2BA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0DBD838-378D-4E68-93DA-B5DB8C7B2BA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0DBD838-378D-4E68-93DA-B5DB8C7B2BA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

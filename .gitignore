@@ -3,3 +3,5 @@
 /InfoTrack.WebRanking/.vs
 /.vs
 /InfoTrack.WebRanking/node_modules
+/InfoTrack.WebRanking.Test/bin
+/InfoTrack.WebRanking.Test/obj
