@@ -37,7 +37,7 @@ namespace InfoTrack.WebRanking.Services
         public async Task<SearchResult> GetSearchRankingsAsync(SearchResult search)
         {
             var searchEngines = await _searchRepository.GetAllSearchEnginesAsync();
-            var selectedSearchEngine = searchEngines.FirstOrDefault(x => x.Id.Equals(search.SelectedSearchEngineName));
+            var selectedSearchEngine = searchEngines.FirstOrDefault(x => x.Id.Equals(search.SelectedSearchEngineId));
 
             if (selectedSearchEngine == null) return search;
 

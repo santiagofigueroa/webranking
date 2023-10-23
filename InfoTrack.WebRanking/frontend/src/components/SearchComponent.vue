@@ -8,7 +8,7 @@
 
         <div class="input-group">
             <label for="searchEngine">Search Engine:</label>
-            <select v-model="form.SelectedSearchEngineName" id="searchEngine">
+            <select v-model="form.SelectedSearchEngineId" id="searchEngine">
                 <option v-for="engine in form.AvailableSearchEngines" :key="engine.id" :value="engine.id">
                     {{ engine.title }}
                 </option>
@@ -22,7 +22,7 @@
             <p><strong>Keywords:</strong> {{ form.keywords }}</p>
             <p><strong>URL:</strong> {{ form.url }}</p>
             <p><strong>Position:</strong> {{ form.resultPositions }}</p>
-            <p><strong>Search Engine:</strong> {{ getEngineNameById(form.id) }}</p>
+            <p><strong>Search Engine:</strong> {{ getEngineNameById(form.SelectedSearchEngineId) }}</p>
         </div>
     </div>
 
@@ -38,7 +38,7 @@
                     Keywords: '',
                     Url: '',
                     ResultPositions: '',
-                    SelectedSearchEngineName: null,
+                    SelectedSearchEngineId: null,
                     AvailableSearchEngines: []
                 }
             }
@@ -73,7 +73,7 @@
                     Keywords: '',
                     Url: '',
                     ResultPositions: '',
-                    SelectedSearchEngineName: null,
+                    SelectedSearchEngineId: null,
                     AvailableSearchEngines: this.form.AvailableSearchEngines
                 };
             }
