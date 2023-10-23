@@ -1,14 +1,19 @@
 <template>
-  <SearchComponent msg="Web Ranking UI"/>
+  <div id="app">
+    <AppNavbar />
+    <router-view />
+  </div>
 </template>
 
+
 <script>
-import SearchComponent from './components/SearchComponent.vue'
+import AppNavbar from './components/AppNavbar.vue';
+
 
 export default {
   name: 'App',
   components: {
-    SearchComponent
+    AppNavbar
   }
 }
 </script>
