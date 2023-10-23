@@ -7,7 +7,7 @@ class ApiService {
 
   getApiUrl() {
     if (process.env.NODE_ENV === "production") {
-      return "https://api.santiagofigueroa.com/api/"; 
+      return "NOT Implemented"; // In case we expand our application live    
     } else {
       return "http://localhost:5148/search/"; // DEV environment URL
     }
@@ -35,6 +35,18 @@ class ApiService {
       throw error;
     }
 }
+
+async getSearchHistory() {
+    try {
+        const response = await axios.get(this.API_URL + "getsearchhistory");
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching search history:", error.response ? error.response.data : error.message);
+        throw error;
+    }
+}
+
 }
 
 export default new ApiService();

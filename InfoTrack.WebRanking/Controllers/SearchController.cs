@@ -13,11 +13,13 @@ namespace InfoTrack.WebRanking.Controllers
             _service = service;
         }
 
-        public async Task<ActionResult> Index()
-        {
-            var history = await _service.GetSearchHistoryAsync();
-            return View(history);
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SearchResult>>> GetSearchHistory()
+        {    
+            var histories = await _service.GetSearchHistoryAsync();
+            return Ok(histories);
         }
+
 
         [HttpPost]
         public async Task<ActionResult> Search([FromBody] SearchResult search)
